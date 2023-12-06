@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void extractPayload(char *input_array, int inputlength,  char **output_payload, int *outputlength)
+{
+
+    if (inputlength < 5)
+    {
+        printf("Invalid input length\n");
+        *output_payload = NULL;
+        *outputlength = 0;
+        return;
+    }
+    *outputlength = input_array[3] - 1;
+    *output_payload = ( char *)malloc(*outputlength * sizeof( char));
+
+    for (int i = 0; i < *outputlength; i++)
+    {
+        (*output_payload)[i] = input_array[i + 5];
+    }
+}
+
+int main()
+{
+
+    char input_array[] = {0x00, 0x02, 0x00, 0x11, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10};
+    int inputlength = sizeof(input_array) / sizeof(input_array[0]);
+    char *output_payload = NULL;
+    int outputlength = 0;
+
+
+    extractPayload(input_array, inputlength, &output_payload, &outputlength);
+
+
+    printf("Extracted Payload: ");
+    for (int i = 0; i <= outputlength-i; i++)
+    {
+        printf("%02X ", output_payload[i]);
+
+    }
+    printf("\n");
+
+
+    free(output_payload);
+
+    return 0;
+}
