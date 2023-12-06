@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Circular
+{
+    int front, rear, currSize;
+    int Size;
+    int *array;
+};
+
+struct Circular *createQueue(int Size)
+{
+
+    struct Circular *queue = (struct Circular *)malloc(sizeof(struct Circular));
+    queue->Size = Size;
+    queue->front = queue->rear = -1;
+    queue->array = (int *)malloc(queue->Size * sizeof(int));
+    return queue;
+}
+
+int isFull(struct Circular *queue)
+{
+    return (queue->currSize == queue->Size);
+}
+
+int isEmpty(struct Circular *queue)
+{
+    return (queue->front == -1);
+}
+
+void write_queue(struct Circular *queue, int value)
+{
+    if (isFull(queue))
+    {
+
+        queue->front = (queue->front + 1) % queue->Size;
+    }
+    else if (isEmpty(queue))
+    {
+
+        queue->front = 0;
+    }
+    queue->rear = (queue->rear + 1) % queue->Size;
+    queue->array[queue->rear] = value;
+    if (queue->currSize < queue->Size)
+    {
+        queue->currSize++;
+    }
+}
+
+int read_queue(struct Circular *queue)
+{
+    int item;
+    if (isEmpty(queue))
+    {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    else
+    {
+        item = queue->array[queue->front];
+        if (queue->front == queue->rear)
+        {
+            queue->front = queue->rear = -1;
+        } else
+        {
+            queue->front = (queue->front + 1) % queue->Size;
+        }
+        printf("%d dequeued\n", item);
+        return item;
+    }
+}
+
+void clear_queue(struct Circular *queue)
+{
+    queue->front = queue->rear = -1;
+    queue->currSize = 0;
+
+    free(queue->array);
+}
+
+void print_queue(struct Circular *queue)
+{
+    int i;
+    if (isEmpty(queue))
+    {
+        printf("Empty Queue\n");
+    }
+    else
+    {
+        printf("The items in the queue are: ");
+        for (i = queue->front; i != queue->rear; i = (i + 1) % queue->Size)
+        {
+            printf("%d ", queue->array[i]);
+        }
+        printf("%d\n", queue->array[i]);
+    }
+}
+
+int main()
+{
+    int SIZE;
+    printf("Enter the Size:");
+    scanf("%d",&SIZE);
+    int choice, data;
+    struct Circular *queue = createQueue(SIZE);
+
+    do
+    {
+        printf("1. Write to queue\n");
+        printf("2. Read from queue\n");
+        printf("3. Print queue\n");
+        printf("4. Clear queue\n");
+        printf("0. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                printf("Enter data to write: ");
+                scanf("%d", &data);
+                write_queue(queue, data);
+                break;
+            case 2:
+                read_queue(queue);
+                break;
+            case 3:
+                print_queue(queue);
+                break;
+            case 4:
+                clear_queue(queue);
+                printf("Queue is clear\n");
+                break;
+            case 0:
+                printf("Exit\n");
+                break;
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+    while (choice != 0);
+
+    return 0;
+}
